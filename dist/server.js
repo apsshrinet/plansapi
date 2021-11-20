@@ -54,29 +54,91 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
+var express_1 = __importStar(require("express"));
 var bodyParser = __importStar(require("body-parser"));
 var dotenv = __importStar(require("dotenv"));
 var db_1 = require("./db");
 var plansRouter_1 = require("./routes/plansRouter");
 var app = (0, express_1.default)();
 dotenv.config();
+//databaseinitilization
+function database_intilization(res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var checkcreatetable, existsplantab, createtable, existsfeaturetab, createtable, existspricingtab, createtable, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 11, , 12]);
+                    return [4 /*yield*/, db_1.db.connect()];
+                case 1:
+                    _a.sent();
+                    console.log("Successfully connected to database...");
+                    checkcreatetable = "SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'plans');";
+                    return [4 /*yield*/, db_1.db.query(checkcreatetable)];
+                case 2:
+                    existsplantab = _a.sent();
+                    if (existsplantab.rows[0]["exists"] == true) {
+                        console.log("Table plans already exists in database");
+                    }
+                    else {
+                        createtable = "CREATE TABLE plans (id uuid PRIMARY KEY,plan_names VARCHAR(255) UNIQUE,button_value VARCHAR(255) NOT NULL, order_limit INTEGER, created_on TIMESTAMPTZ NOT NULL DEFAULT NOW());";
+                        db_1.db.query(createtable);
+                        console.log("Created table plans");
+                    }
+                    checkcreatetable =
+                        "SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'features');";
+                    return [4 /*yield*/, db_1.db.query(checkcreatetable)];
+                case 3:
+                    existsfeaturetab = _a.sent();
+                    if (!(existsfeaturetab.rows[0]["exists"] == true)) return [3 /*break*/, 4];
+                    console.log("Table features already exists in database");
+                    return [3 /*break*/, 6];
+                case 4:
+                    createtable = "CREATE TABLE features (id uuid PRIMARY KEY,plans_id uuid NOT NULL,features VARCHAR(255) NOT NULL);";
+                    return [4 /*yield*/, db_1.db.query(createtable)];
+                case 5:
+                    _a.sent();
+                    console.log("Created table features");
+                    _a.label = 6;
+                case 6:
+                    checkcreatetable =
+                        "SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'pricing');";
+                    return [4 /*yield*/, db_1.db.query(checkcreatetable)];
+                case 7:
+                    existspricingtab = _a.sent();
+                    if (!(existspricingtab.rows[0]["exists"] == true)) return [3 /*break*/, 8];
+                    console.log("Table pricing already exists in database");
+                    return [3 /*break*/, 10];
+                case 8:
+                    createtable = "CREATE TABLE pricing (id uuid PRIMARY KEY,plans_id uuid NOT NULL,original_pricing INT NOT NULL,reduced_pricing INT, billing VARCHAR(100) NOT NULL);";
+                    return [4 /*yield*/, db_1.db.query(createtable)];
+                case 9:
+                    _a.sent();
+                    console.log("Created table pricing");
+                    _a.label = 10;
+                case 10: return [3 /*break*/, 12];
+                case 11:
+                    err_1 = _a.sent();
+                    res.send(err_1);
+                    throw err_1;
+                case 12: return [2 /*return*/];
+            }
+        });
+    });
+}
+database_intilization(express_1.response);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: true,
 }));
-app.get('/', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+app.get("/", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        res.send('Hello from express.');
+        res.send("Hello from express.");
         return [2 /*return*/];
     });
 }); });
-(0, db_1.database_intilization)();
-app.use('/plans', plansRouter_1.router);
+app.use("/plans", plansRouter_1.router);
 app.use(function (res, req, next) { return __awaiter(void 0, void 0, void 0, function () {
     var error;
     return __generator(this, function (_a) {
@@ -91,8 +153,8 @@ app.use(function (err, req, res, next) {
     res.send({
         error: {
             status: err.status || 500,
-            message: err.message
-        }
+            message: err.message,
+        },
     });
 });
 app.listen(process.env.PORT, function () {

@@ -36,41 +36,32 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isplanactive = exports.getplaninfo = exports.getplans = exports.addplan = void 0;
+exports.getplaninfobyname = exports.getplans = exports.addplan = void 0;
 var db_1 = require("../db");
+var uuid_1 = require("uuid");
 var addplan = function (plan_names, button_value, order_limit, original_pricing, reduced_price, billings, features, req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryString, i;
+    var id, plansid, queryString, result, i, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                queryString = "INSERT INTO plans (plan_names, button_value, order_limit) VALUES ($1, $2, $3)";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names, button_value, order_limit], function (err, result) {
-                        if (err) {
-                            console.log("error in plans insertion.....", err);
-                            var obj = {
-                                statusCode: 400,
-                                message: "unsuccessfull",
-                            };
-                            res.send(obj);
-                        }
-                        console.log(result);
-                    })];
+                _a.trys.push([0, 8, , 9]);
+                id = (0, uuid_1.v4)();
+                plansid = id;
+                queryString = "INSERT INTO plans (id,plan_names, button_value, order_limit) VALUES ($1, $2, $3, $4)";
+                return [4 /*yield*/, db_1.db.query(queryString, [
+                        id,
+                        plan_names,
+                        button_value,
+                        order_limit,
+                    ])];
             case 1:
-                _a.sent();
+                result = _a.sent();
+                console.log(result);
                 if (!(original_pricing != null && billings != null)) return [3 /*break*/, 3];
+                id = (0, uuid_1.v4)();
                 queryString =
-                    "INSERT INTO pricing (plan_names, original_pricing, reduced_pricing, billing) VALUES ($1, $2, $3, $4)";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names, original_pricing, reduced_price, billings], function (err, result) {
-                        if (err) {
-                            console.log("Error in pricing insertion....", err);
-                            var obj = {
-                                statusCode: 400,
-                                message: "Unsucessfull",
-                            };
-                            res.send(obj);
-                        }
-                        console.log(result);
-                    })];
+                    "INSERT INTO pricing (id,plansid, original_pricing, reduced_pricing, billing) VALUES ($1, $2, $3, $4)";
+                return [4 /*yield*/, db_1.db.query(queryString, [id, plansid, plan_names, original_pricing, reduced_price, billings])];
             case 2:
                 _a.sent();
                 _a.label = 3;
@@ -80,61 +71,55 @@ var addplan = function (plan_names, button_value, order_limit, original_pricing,
                 _a.label = 4;
             case 4:
                 if (!(i < features.length)) return [3 /*break*/, 7];
+                id = (0, uuid_1.v4)();
                 queryString =
-                    "INSERT INTO features (plan_names, features) VALUES ($1, $2)";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names, features[i]], function (err, result) {
-                        if (err) {
-                            console.log("Error in features insertion......", err);
-                            var obj = {
-                                statusCode: 400,
-                                message: "Unsucessfull",
-                            };
-                            res.send(obj);
-                        }
-                        console.log(result);
-                    })];
+                    "INSERT INTO features (id,plansid,plan_names, features) VALUES ($1, $2, $3, $4)";
+                return [4 /*yield*/, db_1.db.query(queryString, [id, plansid, plan_names, features[i]])];
             case 5:
                 _a.sent();
+                console.log(result);
                 _a.label = 6;
             case 6:
                 i++;
                 return [3 /*break*/, 4];
-            case 7: return [2 /*return*/];
+            case 7: return [3 /*break*/, 9];
+            case 8:
+                err_1 = _a.sent();
+                res.send(err_1);
+                throw err_1;
+            case 9: return [2 /*return*/];
         }
     });
 }); };
 exports.addplan = addplan;
 var getplans = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryString;
+    var queryString, result, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                _a.trys.push([0, 2, , 3]);
                 queryString = "SELECT plan_names from plans";
-                return [4 /*yield*/, db_1.db.query(queryString, function (err, result) {
-                        if (err) {
-                            console.log("Error in fetching from database", err);
-                            var obj = {
-                                statusCode: 500,
-                                message: "Unsucessfull",
-                            };
-                            res.send(obj);
-                        }
-                        console.log(result);
-                        res.send(result.rows);
-                    })];
+                return [4 /*yield*/, db_1.db.query(queryString)];
             case 1:
-                _a.sent();
-                return [2 /*return*/];
+                result = _a.sent();
+                console.log(result);
+                res.send(result.rows);
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                res.send(err_2);
+                throw err_2;
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 exports.getplans = getplans;
-var getplaninfo = function (plan_names, req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryString, pricing_plans, features_plans, result1, result2, result3, result4, e_1;
+var getplaninfobyname = function (plan_names, req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var queryString, pricing_plans, features_plans, result1, result2, result3, result4, result, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 13, , 14]);
+                _a.trys.push([0, 11, , 12]);
                 queryString = "SELECT plan_names from pricing WHERE pricing.plan_names=$1";
                 pricing_plans = 0;
                 features_plans = 0;
@@ -148,31 +133,25 @@ var getplaninfo = function (plan_names, req, res, next) { return __awaiter(void 
             case 2:
                 result2 = _a.sent();
                 features_plans = result2.rowCount;
-                return [4 /*yield*/, console.log("feature length.................. ", features_plans)];
-            case 3:
-                _a.sent();
-                return [4 /*yield*/, console.log("pricing_length................... ", pricing_plans)];
-            case 4:
-                _a.sent();
-                if (!(features_plans > 0 && pricing_plans > 0)) return [3 /*break*/, 6];
+                if (!(features_plans > 0 && pricing_plans > 0)) return [3 /*break*/, 4];
                 queryString =
                     "SELECT plans.plan_names, plans.button_value,plans.order_limit,pricing.original_pricing,pricing.reduced_pricing,pricing.billing,features.features FROM ((plans INNER JOIN pricing ON plans.plan_names = pricing.plan_names)INNER JOIN features ON features.plan_names = plans.plan_names) WHERE plans.plan_names=$1;";
                 return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
-            case 5:
+            case 3:
                 result3 = _a.sent();
                 res.send(result3.rows);
-                return [3 /*break*/, 12];
-            case 6:
-                if (!(features_plans > 0 && pricing_plans == 0)) return [3 /*break*/, 8];
+                return [3 /*break*/, 10];
+            case 4:
+                if (!(features_plans > 0 && pricing_plans == 0)) return [3 /*break*/, 6];
                 queryString =
                     "SELECT plans.plan_names, plans.button_value,plans.order_limit,features.features FROM (plans INNER JOIN pricing ON plans.plan_names = features.plan_names) WHERE plans.plan_names=$1;";
                 return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
-            case 7:
+            case 5:
                 result4 = _a.sent();
                 res.send(result4.rows);
-                return [3 /*break*/, 12];
-            case 8:
-                if (!(features_plans == 0 && pricing_plans > 0)) return [3 /*break*/, 10];
+                return [3 /*break*/, 10];
+            case 6:
+                if (!(features_plans == 0 && pricing_plans > 0)) return [3 /*break*/, 8];
                 queryString =
                     "SELECT plans.plan_names, plans.button_value,plans.order_limit,pricing.original_pricing,pricing.reduced_pricing,pricing.billing FROM (plans INNER JOIN pricing ON plans.plan_names = pricing.plan_names) WHERE plans.plan_names=$1;";
                 return [4 /*yield*/, db_1.db.query(queryString, [plan_names], function (err, result) {
@@ -188,57 +167,23 @@ var getplaninfo = function (plan_names, req, res, next) { return __awaiter(void 
                         console.log(result);
                         res.send(result.rows);
                     })];
-            case 9:
+            case 7:
                 _a.sent();
-                return [3 /*break*/, 12];
-            case 10:
+                return [3 /*break*/, 10];
+            case 8:
                 queryString = "SELECT * from plans WHERE plans.plan_names = $1";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names], function (err, result) {
-                        if (err) {
-                            console.log("Error in fetching from database", err);
-                            var obj = {
-                                statusCode: 500,
-                                message: "Unsucessfull",
-                            };
-                            res.send(obj);
-                        }
-                        console.log(result);
-                        res.send(result.rows);
-                    })];
+                return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
+            case 9:
+                result = _a.sent();
+                console.log(result);
+                res.send(result.rows);
+                _a.label = 10;
+            case 10: return [3 /*break*/, 12];
             case 11:
-                _a.sent();
-                _a.label = 12;
-            case 12: return [3 /*break*/, 14];
-            case 13:
                 e_1 = _a.sent();
                 throw e_1;
-            case 14: return [2 /*return*/];
+            case 12: return [2 /*return*/];
         }
     });
 }); };
-exports.getplaninfo = getplaninfo;
-var isplanactive = function (plan_names, req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryString;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                queryString = "SELECT * FROM plans WHERE plans.plan_names= &1";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names], function (err, result) {
-                        if (err) {
-                            console.log("Error in features insertion......", err);
-                            var obj = {
-                                statusCode: 500,
-                                message: "Unsucessfull",
-                            };
-                            res.send(obj);
-                        }
-                        console.log(result);
-                        res.send(result.rows);
-                    })];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.isplanactive = isplanactive;
+exports.getplaninfobyname = getplaninfobyname;

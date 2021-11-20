@@ -62,7 +62,7 @@ var plans_controller_1 = require("../controller/plans_controller");
 var Joi = __importStar(require("joi"));
 var router = (0, express_1.Router)();
 exports.router = router;
-router.post('/addplan', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/addplan", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var plan_names, button_value, order_limit, original_pricing, reduced_price, billings, features, result, err_1, obj_1, a, obj, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -90,7 +90,7 @@ router.post('/addplan', function (req, res, next) { return __awaiter(void 0, voi
                 console.log(err_1);
                 obj_1 = {
                     statusCode: 400,
-                    message: err_1.message
+                    message: err_1.message,
                 };
                 res.status(obj_1.statusCode);
                 res.send(obj_1);
@@ -104,20 +104,19 @@ router.post('/addplan', function (req, res, next) { return __awaiter(void 0, voi
                 obj = {
                     statusCode: 200,
                     message: "Successfull",
-                    body: a
+                    body: a,
                 };
                 res.send(obj);
                 return [3 /*break*/, 8];
             case 7:
                 err_2 = _a.sent();
                 res.send(err_2);
-                next(err_2);
-                return [3 /*break*/, 8];
+                throw err_2;
             case 8: return [2 /*return*/];
         }
     });
 }); });
-router.get('/getplans', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/getplans", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -140,7 +139,7 @@ router.get('/getplans', function (req, res, next) { return __awaiter(void 0, voi
         }
     });
 }); });
-router.get('/getplaninfo', function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var plan_names, result, err_4, obj, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -162,23 +161,22 @@ router.get('/getplaninfo', function (req, res, next) { return __awaiter(void 0, 
                 console.log(err_4);
                 obj = {
                     statusCode: 400,
-                    message: err_4.message
+                    message: err_4.message,
                 };
                 res.status(obj.statusCode);
                 res.send(obj);
                 return [3 /*break*/, 5];
             case 5:
                 console.log("Validated the search data");
-                return [4 /*yield*/, (0, plans_controller_1.getplaninfo)(plan_names, req, res, next)];
+                return [4 /*yield*/, (0, plans_controller_1.getplaninfobyname)(plan_names, req, res, next)];
             case 6:
                 _a.sent();
                 res.status(200);
                 return [3 /*break*/, 8];
             case 7:
                 err_5 = _a.sent();
-                console.log(err_5);
-                next(err_5);
-                return [3 /*break*/, 8];
+                res.send(err_5);
+                throw err_5;
             case 8: return [2 /*return*/];
         }
     });

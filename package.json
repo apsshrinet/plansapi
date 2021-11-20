@@ -4,7 +4,7 @@
   "description": "It is an api to provide plans and its informations and pricings",
   "main": "server.js",
   "scripts": {
-    "start": "tsc && node dist/server.js"
+    "start": "tsc && nodemon dist/server.js"
   },
   "author": "Adi",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "@types/express": "^4.17.13",
     "@types/node": "^16.11.7",
     "@types/pg": "^8.6.1",
+    "@types/uuid": "^8.3.3",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"

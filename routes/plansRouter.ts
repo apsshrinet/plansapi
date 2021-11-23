@@ -72,7 +72,7 @@ router.get(
 router.get(
   "/getplaninfobyname",
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log("Inside getplaninfo");
+    console.log("Inside getplaninfobyname router");
     try {
       let plan_names = req.body.plan_names;
       try {
@@ -91,7 +91,7 @@ router.get(
       res.status(200);
     } catch (err) {
       res.send(err);
-      throw err;
+      next(err);
     }
   }
 );

@@ -60,8 +60,8 @@ var addplan = function (plan_names, button_value, order_limit, original_pricing,
                 if (!(original_pricing != null && billings != null)) return [3 /*break*/, 3];
                 id = (0, uuid_1.v4)();
                 queryString =
-                    "INSERT INTO pricing (id,plansid, original_pricing, reduced_pricing, billing) VALUES ($1, $2, $3, $4)";
-                return [4 /*yield*/, db_1.db.query(queryString, [id, plansid, plan_names, original_pricing, reduced_price, billings])];
+                    "INSERT INTO pricing (id,plans_id, original_pricing, reduced_pricing, billing) VALUES ($1, $2, $3, $4, $5)";
+                return [4 /*yield*/, db_1.db.query(queryString, [id, plansid, original_pricing, reduced_price, billings])];
             case 2:
                 _a.sent();
                 _a.label = 3;
@@ -73,8 +73,8 @@ var addplan = function (plan_names, button_value, order_limit, original_pricing,
                 if (!(i < features.length)) return [3 /*break*/, 7];
                 id = (0, uuid_1.v4)();
                 queryString =
-                    "INSERT INTO features (id,plansid,plan_names, features) VALUES ($1, $2, $3, $4)";
-                return [4 /*yield*/, db_1.db.query(queryString, [id, plansid, plan_names, features[i]])];
+                    "INSERT INTO features (id,plans_id, features) VALUES ($1, $2, $3)";
+                return [4 /*yield*/, db_1.db.query(queryString, [id, plansid, features[i]])];
             case 5:
                 _a.sent();
                 console.log(result);
@@ -115,74 +115,42 @@ var getplans = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
 }); };
 exports.getplans = getplans;
 var getplaninfobyname = function (plan_names, req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var queryString, pricing_plans, features_plans, result1, result2, result3, result4, result, e_1;
+    var queryString, result1, planid, result2, result3, result4, final_result, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 11, , 12]);
-                queryString = "SELECT plan_names from pricing WHERE pricing.plan_names=$1";
-                pricing_plans = 0;
-                features_plans = 0;
+                _a.trys.push([0, 5, , 6]);
+                queryString = "SELECT id FROM plans WHERE plan_names=$1";
                 return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
             case 1:
                 result1 = _a.sent();
-                pricing_plans = result1.rowCount;
-                queryString =
-                    "SELECT plan_names from features WHERE features.plan_names=$1";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
+                planid = result1.rows[0]['id'];
+                queryString = "SELECT id, plan_names, button_value, order_limit, created_on FROM plans WHERE id=$1";
+                return [4 /*yield*/, db_1.db.query(queryString, [planid])];
             case 2:
                 result2 = _a.sent();
-                features_plans = result2.rowCount;
-                if (!(features_plans > 0 && pricing_plans > 0)) return [3 /*break*/, 4];
-                queryString =
-                    "SELECT plans.plan_names, plans.button_value,plans.order_limit,pricing.original_pricing,pricing.reduced_pricing,pricing.billing,features.features FROM ((plans INNER JOIN pricing ON plans.plan_names = pricing.plan_names)INNER JOIN features ON features.plan_names = plans.plan_names) WHERE plans.plan_names=$1;";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
+                queryString = "SELECT id as \"pricing_id\", original_pricing, reduced_pricing, billing FROM pricing WHERE plans_id=$1";
+                return [4 /*yield*/, db_1.db.query(queryString, [planid])];
             case 3:
                 result3 = _a.sent();
-                res.send(result3.rows);
-                return [3 /*break*/, 10];
+                queryString = "SELECT id as \"feature_id\", features FROM features WHERE plans_id=$1";
+                return [4 /*yield*/, db_1.db.query(queryString, [planid])];
             case 4:
-                if (!(features_plans > 0 && pricing_plans == 0)) return [3 /*break*/, 6];
-                queryString =
-                    "SELECT plans.plan_names, plans.button_value,plans.order_limit,features.features FROM (plans INNER JOIN pricing ON plans.plan_names = features.plan_names) WHERE plans.plan_names=$1;";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
-            case 5:
                 result4 = _a.sent();
-                res.send(result4.rows);
-                return [3 /*break*/, 10];
-            case 6:
-                if (!(features_plans == 0 && pricing_plans > 0)) return [3 /*break*/, 8];
-                queryString =
-                    "SELECT plans.plan_names, plans.button_value,plans.order_limit,pricing.original_pricing,pricing.reduced_pricing,pricing.billing FROM (plans INNER JOIN pricing ON plans.plan_names = pricing.plan_names) WHERE plans.plan_names=$1;";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names], function (err, result) {
-                        if (err) {
-                            console.log(err);
-                            var obj = {
-                                statusCode: 500,
-                                message: "Unsucessfull",
-                            };
-                            res.send(obj);
-                            next(err);
-                        }
-                        console.log(result);
-                        res.send(result.rows);
-                    })];
-            case 7:
-                _a.sent();
-                return [3 /*break*/, 10];
-            case 8:
-                queryString = "SELECT * from plans WHERE plans.plan_names = $1";
-                return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
-            case 9:
-                result = _a.sent();
-                console.log(result);
-                res.send(result.rows);
-                _a.label = 10;
-            case 10: return [3 /*break*/, 12];
-            case 11:
+                final_result = {
+                    "plans": result2.rows,
+                    "pricing": result3.rows,
+                    "features": result4.rows
+                };
+                res.status(200);
+                res.send(final_result);
+                return [3 /*break*/, 6];
+            case 5:
                 e_1 = _a.sent();
-                throw e_1;
-            case 12: return [2 /*return*/];
+                res.send(e_1);
+                next(e_1);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

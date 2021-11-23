@@ -13,39 +13,44 @@ export const addplan = async (
   req: Request,
   res: Response
 ) => {
-  try{
-  let id = uuid();
-  let plansid=id;
-  let queryString =
-    "INSERT INTO plans (id,plan_names, button_value, order_limit) VALUES ($1, $2, $3, $4)";
-  let result = await db.query(queryString, [
-    id,
-    plan_names,
-    button_value,
-    order_limit,
-  ]);
-  console.log(result);
-  if (original_pricing != null && billings != null) {
-    
-    id = uuid();
-    queryString =
-      "INSERT INTO pricing (id,plansid, original_pricing, reduced_pricing, billing) VALUES ($1, $2, $3, $4)";
-    await db.query(queryString,[id,plansid,plan_names, original_pricing, reduced_price, billings])
-  }
-  if (features.length > 0) {
-    for (let i = 0; i < features.length; i++) {
-      id=uuid();
+  try {
+    let id = uuid();
+    let plansid = id;
+    let queryString =
+      "INSERT INTO plans (id,plan_names, button_value, order_limit) VALUES ($1, $2, $3, $4)";
+    let result = await db.query(queryString, [
+      id,
+      plan_names,
+      button_value,
+      order_limit,
+    ]);
+    console.log(result);
+    if (original_pricing != null && billings != null) {
+      id = uuid();
       queryString =
-        "INSERT INTO features (id,plansid,plan_names, features) VALUES ($1, $2, $3, $4)";
-      await db.query(queryString, [id,plansid,plan_names, features[i]])
-        console.log(result);
+        "INSERT INTO pricing (id,plans_id, original_pricing, reduced_pricing, billing) VALUES ($1, $2, $3, $4, $5)";
+      await db.query(queryString, [
+        id,
+        plansid,
+        original_pricing,
+        reduced_price,
+        billings,
+      ]);
     }
+    if (features.length > 0) {
+      for (let i = 0; i < features.length; i++) {
+        id = uuid();
+        queryString =
+          "INSERT INTO features (id,plans_id, features) VALUES ($1, $2, $3)";
+        await db.query(queryString, [id, plansid, features[i]]);
+        console.log(result);
+      }
+    }
+  } catch (err) {
+    res.send(err);
+    throw err;
   }
-}catch(err){
-  res.send(err);
-  throw err;
-}
-}
+};
 export const getplans = async (req: Request, res: Response) => {
   try {
     let queryString = "SELECT plan_names from plans";
@@ -65,55 +70,36 @@ export const getplaninfobyname = async (
   next: NextFunction
 ) => {
   try {
-    let queryString =
-      "SELECT plan_names from pricing WHERE pricing.plan_names=$1";
-    let pricing_plans: Number = 0;
-    let features_plans: Number = 0;
-    const result1 = await db.query(queryString, [plan_names]);
-    pricing_plans = result1.rowCount;
+    let queryString = "SELECT id FROM plans WHERE plan_names=$1";
+    let result1 = await db.query(queryString, [plan_names]);
+    let planid = result1.rows[0]["id"];
     queryString =
-      "SELECT plan_names from features WHERE features.plan_names=$1";
-    const result2 = await db.query(queryString, [plan_names]);
-    features_plans = result2.rowCount;
-
-    if (features_plans > 0 && pricing_plans > 0) {
-      queryString =
-        "SELECT plans.id,plans.plan_names, plans.button_value,plans.order_limit,pricing.original_pricing,pricing.reduced_pricing,pricing.billing,features.features FROM ((plans INNER JOIN pricing ON plans.plan_names = pricing.plan_names)INNER JOIN features ON features.plan_names = plans.plan_names) WHERE plans.plan_names=$1;";
-      const result3 = await db.query(queryString, [plan_names]);
-      res.send(result3.rows);
-    } else if (features_plans > 0 && pricing_plans == 0) {
-      queryString =
-        "SELECT plans.plan_names, plans.button_value,plans.order_limit,features.features FROM (plans INNER JOIN pricing ON plans.plan_names = features.plan_names) WHERE plans.plan_names=$1;";
-      const result4 = await db.query(queryString, [plan_names]);
-      res.send(result4.rows);
-    } else if (features_plans == 0 && pricing_plans > 0) {
-      queryString =
-        "SELECT plans.plan_names, plans.button_value,plans.order_limit,pricing.original_pricing,pricing.reduced_pricing,pricing.billing FROM (plans INNER JOIN pricing ON plans.plan_names = pricing.plan_names) WHERE plans.plan_names=$1;";
-      await db.query(queryString, [plan_names], (err, result) => {
-        if (err) {
-          console.log(err);
-          const obj = {
-            statusCode: 500,
-            message: "Unsucessfull",
-          };
-          res.send(obj);
-          next(err);
-        }
-        console.log(result);
-        res.send(result.rows);
-      });
-    } else {
-      queryString = "SELECT * from plans WHERE plans.plan_names = $1";
-      let result =await db.query(queryString, [plan_names]);
-        console.log(result);
-        const pricing = {};
-        const features = {};
-        const finalresult = [result.rows,pricing,features]
-        res.send(result.rows);
-    }
+      "SELECT id, plan_names, button_value, order_limit, created_on FROM plans WHERE id=$1";
+    let result2 = await db.query(queryString, [planid]);
+    queryString =
+      'SELECT id as "pricing_id", original_pricing, reduced_pricing, billing FROM pricing WHERE plans_id=$1';
+    let result3 = await db.query(queryString, [planid]);
+    queryString =
+      'SELECT id as "feature_id", features FROM features WHERE plans_id=$1';
+    let result4 = await db.query(queryString, [planid]);
+    let final_result = {
+      plans: result2.rows,
+      pricing: result3.rows,
+      features: result4.rows,
+    };
+    res.status(200);
+    res.send(final_result);
   } catch (e) {
     res.send(e);
-    throw e;
+    next(e);
   }
-}
+};
 
+export const deleteplan = async (
+  plan_names: string,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  
+};

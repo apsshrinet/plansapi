@@ -144,7 +144,7 @@ router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("Inside getplaninfo");
+                console.log("Inside getplaninfobyname router");
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 7, , 8]);
@@ -176,7 +176,8 @@ router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(vo
             case 7:
                 err_5 = _a.sent();
                 res.send(err_5);
-                throw err_5;
+                next(err_5);
+                return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
         }
     });

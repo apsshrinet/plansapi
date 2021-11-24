@@ -121,7 +121,7 @@ function database_intilization(res) {
                 case 11:
                     err_1 = _a.sent();
                     res.send(err_1);
-                    throw err_1;
+                    return [3 /*break*/, 12];
                 case 12: return [2 /*return*/];
             }
         });

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { add_plans_schema } from "../validation";
 import { Router } from "express";
-import { addplan, getplaninfobyname, getplans } from "../controller/plans_controller";
+import { addplan, deleteplan, getplaninfobyname, getplans, updatepricing } from "../controller/plans_controller";
 import * as Joi from "joi";
 
 
@@ -51,7 +51,6 @@ router.post(
       res.send(obj);
     } catch (err) {
       res.send(err);
-        throw err;
     }
   }
 );
@@ -64,7 +63,7 @@ router.get(
       res.status(200);
     } catch (err) {
       console.log(err);
-      next(err);
+      res.send(err);
     }
   }
 );
@@ -91,7 +90,64 @@ router.get(
       res.status(200);
     } catch (err) {
       res.send(err);
-      next(err);
+    }
+  }
+);
+
+router.delete(
+  "/deleteplan",
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Inside deleteplan router");
+    try {
+      let plan_names = req.body.plan_names;
+      try {
+        const result = await Joi.string().validateAsync(req.body.plan_names);
+      } catch (err: any) {
+        console.log(err);
+        const obj = {
+          statusCode: 400,
+          message: err.message,
+        };
+        res.status(obj.statusCode);
+        res.send(obj);
+      }
+      console.log("Validated the deletion data");
+      await deleteplan(plan_names, req, res, next);
+      res.status(200);
+    } catch (err) {
+      res.send(err);
+    }
+  }
+);
+
+router.put(
+  "/updatepricing",
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Inside updatepricing router");
+    try {
+      let pricing_id = req.body.id;
+      let original_pricing = req.body.original_pricing||null;
+      let reduced_pricing = req.body.reduced_pricing||null;
+      let billing = req.body.billing||null;
+      try {
+        await Joi.string().guid().validateAsync(req.body.pricing_id);
+        await Joi.string().validateAsync(req.body.original_pricing);
+        await Joi.string().validateAsync(req.body.reduced_pricing);
+        await Joi.string().validateAsync(req.body.billing);
+      } catch (err: any) {
+        console.log(err);
+        const obj = {
+          statusCode: 400,
+          message: err.message,
+        };
+        res.status(obj.statusCode);
+        res.send(obj);
+      }
+      console.log("Validated the sent data");
+      await updatepricing(pricing_id,original_pricing,reduced_pricing,billing, req, res, next);
+      res.status(200);
+    } catch (err) {
+      res.send(err);
     }
   }
 );

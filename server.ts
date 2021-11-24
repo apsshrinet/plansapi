@@ -55,7 +55,6 @@ async function database_intilization(res: Response) {
     }
   } catch (err) {
     res.send(err);
-    throw err;
   }
 }
 

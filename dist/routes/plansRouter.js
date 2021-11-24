@@ -111,7 +111,7 @@ router.post("/addplan", function (req, res, next) { return __awaiter(void 0, voi
             case 7:
                 err_2 = _a.sent();
                 res.send(err_2);
-                throw err_2;
+                return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
         }
     });
@@ -177,6 +177,49 @@ router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(vo
                 err_5 = _a.sent();
                 res.send(err_5);
                 next(err_5);
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
+        }
+    });
+}); });
+router.delete("/deleteplan", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var plan_names, result, err_6, obj, err_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("Inside deleteplan router");
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 7, , 8]);
+                plan_names = req.body.plan_names;
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, Joi.string().validateAsync(req.body.plan_names)];
+            case 3:
+                result = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                err_6 = _a.sent();
+                console.log(err_6);
+                obj = {
+                    statusCode: 400,
+                    message: err_6.message,
+                };
+                res.status(obj.statusCode);
+                res.send(obj);
+                return [3 /*break*/, 5];
+            case 5:
+                console.log("Validated the deletion data");
+                return [4 /*yield*/, (0, plans_controller_1.deleteplan)(plan_names, req, res, next)];
+            case 6:
+                _a.sent();
+                res.status(200);
+                return [3 /*break*/, 8];
+            case 7:
+                err_7 = _a.sent();
+                res.send(err_7);
+                next(err_7);
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
         }

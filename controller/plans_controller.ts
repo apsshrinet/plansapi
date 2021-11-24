@@ -48,7 +48,6 @@ export const addplan = async (
     }
   } catch (err) {
     res.send(err);
-    throw err;
   }
 };
 export const getplans = async (req: Request, res: Response) => {
@@ -59,7 +58,6 @@ export const getplans = async (req: Request, res: Response) => {
     res.send(result.rows);
   } catch (err) {
     res.send(err);
-    throw err;
   }
 };
 
@@ -72,6 +70,15 @@ export const getplaninfobyname = async (
   try {
     let queryString = "SELECT id FROM plans WHERE plan_names=$1";
     let result1 = await db.query(queryString, [plan_names]);
+    if (result1.rowCount != 1) {
+      let result = {
+        statusCode: 404,
+        message: "No Such plan exist",
+      };
+      res.status(result.statusCode);
+      res.send(result);
+    }
+
     let planid = result1.rows[0]["id"];
     queryString =
       "SELECT id, plan_names, button_value, order_limit, created_on FROM plans WHERE id=$1";
@@ -91,7 +98,6 @@ export const getplaninfobyname = async (
     res.send(final_result);
   } catch (e) {
     res.send(e);
-    next(e);
   }
 };
 
@@ -101,5 +107,72 @@ export const deleteplan = async (
   res: Response,
   next: NextFunction
 ) => {
-  
+  try {
+    let queryString = "SELECT id FROM plans WHERE plan_names=$1";
+    let result1 = await db.query(queryString, [plan_names]);
+    if (result1.rowCount != 1) {
+      let result = {
+        statusCode: 404,
+        message: "No Such plan exist",
+      };
+      res.status(result.statusCode);
+      res.send(result);
+    }
+    let planid = result1.rows[0]["id"];
+    queryString = "DELETE FROM plans WHERE id=$1";
+    await db.query(queryString, [planid]);
+
+    queryString = "DELETE FROM pricing WHERE plans_id=$1";
+    await db.query(queryString, [planid]);
+
+    queryString = "DELETE FROM features WHERE plans_id=$1";
+    await db.query(queryString, [planid]);
+
+    let result = {
+      statusCode: 200,
+      message: "Successfully deleted all the data",
+    };
+    res.status(result.statusCode);
+    res.send(result);
+  } catch (e) {
+    res.send(e);
+  }
 };
+
+export const updatepricing = async (
+  pricing_id: string,
+  original_pricing: string,
+  reduced_pricing: string,
+  billing: string,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let queryString = "SELECT id FROM princing WHERE id=$1";
+    let result1 = await db.query(queryString, [pricing_id]);
+    if (result1.rowCount != 1) {
+      let result = {
+        statusCode: 404,
+        message: "No Such pricing exist",
+      };
+      res.status(result.statusCode);
+      res.send(result);
+    }
+    if (original_pricing != null) {
+      queryString = "UPDATE pricing SET original_pricing = $1, WHERE id = $2;";
+      await db.query(queryString, [original_pricing, pricing_id]);
+    }
+    if (reduced_pricing != null) {
+      queryString = "UPDATE pricing SET reduced_pricing = $1, WHERE id = $2;";
+      await db.query(queryString, [reduced_pricing, pricing_id]);
+    }
+    if (billing != null) {
+      queryString = "UPDATE pricing SET billing = $1, WHERE id = $2;";
+      await db.query(queryString, [billing, pricing_id]);
+    }
+  } catch (e) {
+    res.send(e);
+  }
+};
+

@@ -225,7 +225,7 @@ var updatepricing = function (pricing_id, original_pricing, reduced_pricing, bil
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 8, , 9]);
-                queryString = "SELECT id FROM princing WHERE id=$1";
+                queryString = "SELECT id FROM pricing WHERE id=$1";
                 return [4 /*yield*/, db_1.db.query(queryString, [pricing_id])];
             case 1:
                 result1 = _a.sent();
@@ -237,22 +237,22 @@ var updatepricing = function (pricing_id, original_pricing, reduced_pricing, bil
                     res.status(result.statusCode);
                     res.send(result);
                 }
-                if (!(original_pricing != null)) return [3 /*break*/, 3];
-                queryString = "UPDATE pricing SET original_pricing = $1, WHERE id = $2;";
+                if (!(original_pricing != -1)) return [3 /*break*/, 3];
+                queryString = "UPDATE pricing SET original_pricing = $1 WHERE id = $2;";
                 return [4 /*yield*/, db_1.db.query(queryString, [original_pricing, pricing_id])];
             case 2:
                 _a.sent();
                 _a.label = 3;
             case 3:
-                if (!(reduced_pricing != null)) return [3 /*break*/, 5];
-                queryString = "UPDATE pricing SET reduced_pricing = $1, WHERE id = $2;";
+                if (!(reduced_pricing != -1)) return [3 /*break*/, 5];
+                queryString = "UPDATE pricing SET reduced_pricing = $1 WHERE id = $2;";
                 return [4 /*yield*/, db_1.db.query(queryString, [reduced_pricing, pricing_id])];
             case 4:
                 _a.sent();
                 _a.label = 5;
             case 5:
-                if (!(billing != null)) return [3 /*break*/, 7];
-                queryString = "UPDATE pricing SET billing = $1, WHERE id = $2;";
+                if (!(billing != '')) return [3 /*break*/, 7];
+                queryString = "UPDATE pricing SET billing = $1 WHERE id = $2;";
                 return [4 /*yield*/, db_1.db.query(queryString, [billing, pricing_id])];
             case 6:
                 _a.sent();
@@ -260,6 +260,8 @@ var updatepricing = function (pricing_id, original_pricing, reduced_pricing, bil
             case 7: return [3 /*break*/, 9];
             case 8:
                 e_3 = _a.sent();
+                console.log(e_3);
+                res.status(500);
                 res.send(e_3);
                 return [3 /*break*/, 9];
             case 9: return [2 /*return*/];

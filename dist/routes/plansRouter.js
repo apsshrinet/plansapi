@@ -225,7 +225,7 @@ router.delete("/deleteplan", function (req, res, next) { return __awaiter(void 0
     });
 }); });
 router.put("/updatepricing", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var pricing_id, original_pricing, reduced_pricing, billing, err_8, obj, err_9;
+    var pricing_id, original_pricing, reduced_pricing, billing, err_8, obj, result, err_9;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -234,22 +234,22 @@ router.put("/updatepricing", function (req, res, next) { return __awaiter(void 0
             case 1:
                 _a.trys.push([1, 10, , 11]);
                 pricing_id = req.body.id;
-                original_pricing = req.body.original_pricing || null;
-                reduced_pricing = req.body.reduced_pricing || null;
-                billing = req.body.billing || null;
+                original_pricing = req.body.original_pricing || -1;
+                reduced_pricing = req.body.reduced_pricing || -1;
+                billing = req.body.billing || '';
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 7, , 8]);
-                return [4 /*yield*/, Joi.string().guid().validateAsync(req.body.pricing_id)];
+                return [4 /*yield*/, Joi.string().guid().validateAsync(req.body.id)];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, Joi.string().validateAsync(req.body.original_pricing)];
+                return [4 /*yield*/, Joi.number().optional().validateAsync(req.body.original_pricing)];
             case 4:
                 _a.sent();
-                return [4 /*yield*/, Joi.string().validateAsync(req.body.reduced_pricing)];
+                return [4 /*yield*/, Joi.number().optional().validateAsync(req.body.reduced_pricing)];
             case 5:
                 _a.sent();
-                return [4 /*yield*/, Joi.string().validateAsync(req.body.billing)];
+                return [4 /*yield*/, Joi.string().optional().validateAsync(req.body.billing)];
             case 6:
                 _a.sent();
                 return [3 /*break*/, 8];
@@ -268,7 +268,12 @@ router.put("/updatepricing", function (req, res, next) { return __awaiter(void 0
                 return [4 /*yield*/, (0, plans_controller_1.updatepricing)(pricing_id, original_pricing, reduced_pricing, billing, req, res, next)];
             case 9:
                 _a.sent();
-                res.status(200);
+                result = {
+                    statusCode: 200,
+                    message: "Succesfully updated pricing"
+                };
+                res.status(result.statusCode);
+                res.send(result);
                 return [3 /*break*/, 11];
             case 10:
                 err_9 = _a.sent();

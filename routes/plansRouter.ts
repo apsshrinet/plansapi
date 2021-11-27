@@ -130,12 +130,12 @@ router.put(
       let pricing_id = req.body.id;
       let original_pricing = req.body.original_pricing||-1;
       let reduced_pricing = req.body.reduced_pricing||-1;
-      let billing = req.body.billing||-1;
+      let billing = req.body.billing||'';
       try {
-        await Joi.string().guid().validateAsync(req.body.pricing_id);
-        await Joi.string().validateAsync(req.body.original_pricing);
-        await Joi.string().validateAsync(req.body.reduced_pricing);
-        await Joi.string().validateAsync(req.body.billing);
+        await Joi.string().guid().validateAsync(req.body.id);
+        await Joi.number().optional().validateAsync(req.body.original_pricing);
+        await Joi.number().optional().validateAsync(req.body.reduced_pricing);
+        await Joi.string().optional().validateAsync(req.body.billing);
       } catch (err: any) {
         console.log(err);
         const obj = {
@@ -147,7 +147,12 @@ router.put(
       }
       console.log("Validated the sent data");
       await updatepricing(pricing_id,original_pricing,reduced_pricing,billing, req, res, next);
-      res.status(200);
+      const result  = {
+        statusCode: 200,
+        message: "Succesfully updated pricing"
+      }
+      res.status(result.statusCode);
+      res.send(result);
     } catch (err) {
       res.send(err);
     }

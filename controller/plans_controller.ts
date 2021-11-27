@@ -145,13 +145,13 @@ export const updatepricing = async (
   pricing_id: string,
   original_pricing: Number,
   reduced_pricing: Number,
-  billing: Number,
+  billing: String,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    let queryString = "SELECT id FROM princing WHERE id=$1";
+    let queryString = "SELECT id FROM pricing WHERE id=$1";
     let result1 = await db.query(queryString, [pricing_id]);
     if (result1.rowCount != 1) {
       let result = {
@@ -162,18 +162,20 @@ export const updatepricing = async (
       res.send(result);
     }
     if (original_pricing != -1) {
-      queryString = "UPDATE pricing SET original_pricing = $1, WHERE id = $2;";
+      queryString = "UPDATE pricing SET original_pricing = $1 WHERE id = $2;";
       await db.query(queryString, [original_pricing, pricing_id]);
     }
     if (reduced_pricing != -1) {
-      queryString = "UPDATE pricing SET reduced_pricing = $1, WHERE id = $2;";
+      queryString = "UPDATE pricing SET reduced_pricing = $1 WHERE id = $2;";
       await db.query(queryString, [reduced_pricing, pricing_id]);
     }
-    if (billing != null) {
-      queryString = "UPDATE pricing SET billing = $1, WHERE id = $2;";
+    if (billing != '') {
+      queryString = "UPDATE pricing SET billing = $1 WHERE id = $2;";
       await db.query(queryString, [billing, pricing_id]);
     }
   } catch (e) {
+    console.log(e);
+    res.status(500);
     res.send(e);
   }
 };

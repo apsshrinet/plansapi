@@ -128,9 +128,9 @@ router.put(
     console.log("Inside updatepricing router");
     try {
       let pricing_id = req.body.id;
-      let original_pricing = req.body.original_pricing||null;
-      let reduced_pricing = req.body.reduced_pricing||null;
-      let billing = req.body.billing||null;
+      let original_pricing = req.body.original_pricing||-1;
+      let reduced_pricing = req.body.reduced_pricing||-1;
+      let billing = req.body.billing||-1;
       try {
         await Joi.string().guid().validateAsync(req.body.pricing_id);
         await Joi.string().validateAsync(req.body.original_pricing);

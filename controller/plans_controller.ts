@@ -143,9 +143,9 @@ export const deleteplan = async (
 
 export const updatepricing = async (
   pricing_id: string,
-  original_pricing: string,
-  reduced_pricing: string,
-  billing: string,
+  original_pricing: Number,
+  reduced_pricing: Number,
+  billing: Number,
   req: Request,
   res: Response,
   next: NextFunction
@@ -161,11 +161,11 @@ export const updatepricing = async (
       res.status(result.statusCode);
       res.send(result);
     }
-    if (original_pricing != null) {
+    if (original_pricing != -1) {
       queryString = "UPDATE pricing SET original_pricing = $1, WHERE id = $2;";
       await db.query(queryString, [original_pricing, pricing_id]);
     }
-    if (reduced_pricing != null) {
+    if (reduced_pricing != -1) {
       queryString = "UPDATE pricing SET reduced_pricing = $1, WHERE id = $2;";
       await db.query(queryString, [reduced_pricing, pricing_id]);
     }

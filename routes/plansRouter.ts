@@ -77,7 +77,7 @@ router.get(
     try {
       let plan_names = req.body.plan_names;
       try {
-        const result = await Joi.string().validateAsync(req.body.plan_names);
+        const result = await Joi.string().required().validateAsync(req.body.plan_names);
       } catch (err: any) {
         console.log(err);
         const obj = {
@@ -103,7 +103,7 @@ router.delete(
     try {
       let plan_names = req.body.plan_names;
       try {
-        const result = await Joi.string().validateAsync(req.body.plan_names);
+        const result = await Joi.string().required().validateAsync(req.body.plan_names);
       } catch (err: any) {
         console.log(err);
         const obj = {
@@ -132,7 +132,7 @@ router.put(
       let reduced_pricing = req.body.reduced_pricing||-1;
       let billing = req.body.billing||'';
       try {
-        await Joi.string().guid().validateAsync(req.body.id);
+        await Joi.string().guid().required().validateAsync(req.body.id);
         await Joi.number().optional().validateAsync(req.body.original_pricing);
         await Joi.number().optional().validateAsync(req.body.reduced_pricing);
         await Joi.string().optional().validateAsync(req.body.billing);
@@ -166,7 +166,7 @@ router.delete(
     try {
       let feature_id = req.body.feature_id;
       try {
-        const result = await Joi.string().guid().validateAsync(req.body.feature_id);
+        const result = await Joi.string().guid().required().validateAsync(req.body.feature_id);
       } catch (err: any) {
         console.log(err);
         const obj = {
@@ -191,8 +191,8 @@ router.post(
       let plan_name = req.body.plan_name;
       let feature = req.body.feature;
       try {
-        await Joi.string().validateAsync(req.body.plan_name);
-        await Joi.string().validateAsync(req.body.feature);
+        await Joi.string().required().validateAsync(req.body.plan_name);
+        await Joi.string().required().validateAsync(req.body.feature);
       } catch (err: any) {
         console.log(err);
         const obj = {

@@ -196,6 +196,7 @@ export const deletefeature = async(
     res.status(result.statusCode);
     res.send(result);
   } catch (e) {
+    console.log(e);
     res.send(e);
   }
 }

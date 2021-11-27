@@ -153,7 +153,7 @@ router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(vo
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, Joi.string().validateAsync(req.body.plan_names)];
+                return [4 /*yield*/, Joi.string().required().validateAsync(req.body.plan_names)];
             case 3:
                 result = _a.sent();
                 return [3 /*break*/, 5];
@@ -195,7 +195,7 @@ router.delete("/deleteplan", function (req, res, next) { return __awaiter(void 0
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, Joi.string().validateAsync(req.body.plan_names)];
+                return [4 /*yield*/, Joi.string().required().validateAsync(req.body.plan_names)];
             case 3:
                 result = _a.sent();
                 return [3 /*break*/, 5];
@@ -240,7 +240,7 @@ router.put("/updatepricing", function (req, res, next) { return __awaiter(void 0
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 7, , 8]);
-                return [4 /*yield*/, Joi.string().guid().validateAsync(req.body.id)];
+                return [4 /*yield*/, Joi.string().guid().required().validateAsync(req.body.id)];
             case 3:
                 _a.sent();
                 return [4 /*yield*/, Joi.number().optional().validateAsync(req.body.original_pricing)];
@@ -296,7 +296,7 @@ router.delete("/deletefeature", function (req, res, next) { return __awaiter(voi
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, Joi.string().guid().validateAsync(req.body.feature_id)];
+                return [4 /*yield*/, Joi.string().guid().required().validateAsync(req.body.feature_id)];
             case 3:
                 result = _a.sent();
                 return [3 /*break*/, 5];
@@ -338,10 +338,10 @@ router.post("/addfeature", function (req, res, next) { return __awaiter(void 0, 
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 5, , 6]);
-                return [4 /*yield*/, Joi.string().validateAsync(req.body.plan_name)];
+                return [4 /*yield*/, Joi.string().required().validateAsync(req.body.plan_name)];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, Joi.string().validateAsync(req.body.feature)];
+                return [4 /*yield*/, Joi.string().required().validateAsync(req.body.feature)];
             case 4:
                 _a.sent();
                 return [3 /*break*/, 6];

@@ -288,6 +288,7 @@ var deletefeature = function (feature_id, req, res, next) { return __awaiter(voi
                 return [3 /*break*/, 3];
             case 2:
                 e_4 = _a.sent();
+                console.log(e_4);
                 res.send(e_4);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

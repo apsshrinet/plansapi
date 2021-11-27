@@ -82,7 +82,7 @@ function database_intilization(res) {
                         console.log("Table plans already exists in database");
                     }
                     else {
-                        createtable = "CREATE TABLE plans (id uuid PRIMARY KEY,plan_names VARCHAR(255) UNIQUE,button_value VARCHAR(255) NOT NULL, order_limit INTEGER, created_on TIMESTAMPTZ NOT NULL DEFAULT NOW());";
+                        createtable = "CREATE TABLE plans (id uuid PRIMARY KEY,plan_names VARCHAR(255) UNIQUE,button_value VARCHAR(255) NOT NULL, order_limit INTEGER, place_holder VARCHAR(255) ,created_on TIMESTAMPTZ NOT NULL DEFAULT NOW());";
                         db_1.db.query(createtable);
                         console.log("Created table plans");
                     }

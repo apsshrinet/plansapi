@@ -36,10 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteplan = exports.getplaninfobyname = exports.getplans = exports.addplan = void 0;
+exports.addfeature = exports.deletefeature = exports.updatepricing = exports.deleteplan = exports.getplaninfobyname = exports.getplans = exports.addplan = void 0;
 var db_1 = require("../db");
 var uuid_1 = require("uuid");
-var addplan = function (plan_names, button_value, order_limit, original_pricing, reduced_price, billings, features, req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var addplan = function (plan_names, button_value, order_limit, place_holder, original_pricing, reduced_price, billings, features, req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var id, plansid, queryString, result, i, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -47,12 +47,13 @@ var addplan = function (plan_names, button_value, order_limit, original_pricing,
                 _a.trys.push([0, 8, , 9]);
                 id = (0, uuid_1.v4)();
                 plansid = id;
-                queryString = "INSERT INTO plans (id,plan_names, button_value, order_limit) VALUES ($1, $2, $3, $4)";
+                queryString = "INSERT INTO plans (id,plan_names, button_value, order_limit, place_holder) VALUES ($1, $2, $3, $4, $5)";
                 return [4 /*yield*/, db_1.db.query(queryString, [
                         id,
                         plan_names,
                         button_value,
                         order_limit,
+                        place_holder
                     ])];
             case 1:
                 result = _a.sent();
@@ -133,14 +134,14 @@ var getplaninfobyname = function (plan_names, req, res, next) { return __awaiter
                 if (result1.rowCount != 1) {
                     result = {
                         statusCode: 404,
-                        message: "No Such plan exist"
+                        message: "No Such plan exist",
                     };
                     res.status(result.statusCode);
                     res.send(result);
                 }
                 planid = result1.rows[0]["id"];
                 queryString =
-                    "SELECT id, plan_names, button_value, order_limit, created_on FROM plans WHERE id=$1";
+                    "SELECT id, plan_names, button_value, order_limit,place_holder, created_on FROM plans WHERE id=$1";
                 return [4 /*yield*/, db_1.db.query(queryString, [planid])];
             case 2:
                 result2 = _a.sent();
@@ -184,30 +185,27 @@ var deleteplan = function (plan_names, req, res, next) { return __awaiter(void 0
                 if (result1.rowCount != 1) {
                     result_1 = {
                         statusCode: 404,
-                        message: "No Such plan exist"
+                        message: "No Such plan exist",
                     };
                     res.status(result_1.statusCode);
                     res.send(result_1);
                 }
                 planid = result1.rows[0]["id"];
-                queryString =
-                    "DELETE FROM plans WHERE id=$1";
+                queryString = "DELETE FROM plans WHERE id=$1";
                 return [4 /*yield*/, db_1.db.query(queryString, [planid])];
             case 2:
                 _a.sent();
-                queryString =
-                    "DELETE FROM pricing WHERE plans_id=$1";
+                queryString = "DELETE FROM pricing WHERE plans_id=$1";
                 return [4 /*yield*/, db_1.db.query(queryString, [planid])];
             case 3:
                 _a.sent();
-                queryString =
-                    "DELETE FROM features WHERE plans_id=$1";
+                queryString = "DELETE FROM features WHERE plans_id=$1";
                 return [4 /*yield*/, db_1.db.query(queryString, [planid])];
             case 4:
                 _a.sent();
                 result = {
                     statusCode: 200,
-                    message: "Successfully deleted all the data"
+                    message: "Successfully deleted all the data",
                 };
                 res.status(result.statusCode);
                 res.send(result);
@@ -221,3 +219,118 @@ var deleteplan = function (plan_names, req, res, next) { return __awaiter(void 0
     });
 }); };
 exports.deleteplan = deleteplan;
+var updatepricing = function (pricing_id, original_pricing, reduced_pricing, billing, req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var queryString, result1, result, e_3;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 8, , 9]);
+                queryString = "SELECT id FROM princing WHERE id=$1";
+                return [4 /*yield*/, db_1.db.query(queryString, [pricing_id])];
+            case 1:
+                result1 = _a.sent();
+                if (result1.rowCount != 1) {
+                    result = {
+                        statusCode: 404,
+                        message: "No Such pricing exist",
+                    };
+                    res.status(result.statusCode);
+                    res.send(result);
+                }
+                if (!(original_pricing != null)) return [3 /*break*/, 3];
+                queryString = "UPDATE pricing SET original_pricing = $1, WHERE id = $2;";
+                return [4 /*yield*/, db_1.db.query(queryString, [original_pricing, pricing_id])];
+            case 2:
+                _a.sent();
+                _a.label = 3;
+            case 3:
+                if (!(reduced_pricing != null)) return [3 /*break*/, 5];
+                queryString = "UPDATE pricing SET reduced_pricing = $1, WHERE id = $2;";
+                return [4 /*yield*/, db_1.db.query(queryString, [reduced_pricing, pricing_id])];
+            case 4:
+                _a.sent();
+                _a.label = 5;
+            case 5:
+                if (!(billing != null)) return [3 /*break*/, 7];
+                queryString = "UPDATE pricing SET billing = $1, WHERE id = $2;";
+                return [4 /*yield*/, db_1.db.query(queryString, [billing, pricing_id])];
+            case 6:
+                _a.sent();
+                _a.label = 7;
+            case 7: return [3 /*break*/, 9];
+            case 8:
+                e_3 = _a.sent();
+                res.send(e_3);
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
+        }
+    });
+}); };
+exports.updatepricing = updatepricing;
+var deletefeature = function (feature_id, req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var queryString, result, e_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                queryString = "DELETE FROM features WHERE id=$1";
+                return [4 /*yield*/, db_1.db.query(queryString, [feature_id])];
+            case 1:
+                _a.sent();
+                result = {
+                    statusCode: 200,
+                    message: "Succesfully deleted the given data"
+                };
+                res.status(result.statusCode);
+                res.send(result);
+                return [3 /*break*/, 3];
+            case 2:
+                e_4 = _a.sent();
+                res.send(e_4);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.deletefeature = deletefeature;
+var addfeature = function (plan_name, feature, req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var queryString, result1, result_2, planid, id, result, e_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                queryString = "SELECT id FROM plans WHERE plan_names=$1";
+                return [4 /*yield*/, db_1.db.query(queryString, [plan_name])];
+            case 1:
+                result1 = _a.sent();
+                if (result1.rowCount != 1) {
+                    result_2 = {
+                        statusCode: 404,
+                        message: "No Such plan exist",
+                    };
+                    res.status(result_2.statusCode);
+                    res.send(result_2);
+                }
+                planid = result1.rows[0]["id"];
+                id = (0, uuid_1.v4)();
+                queryString =
+                    "INSERT INTO features (id,plans_id, features) VALUES ($1, $2, $3)";
+                return [4 /*yield*/, db_1.db.query(queryString, [id, planid, feature])];
+            case 2:
+                _a.sent();
+                result = {
+                    statusCode: 200,
+                    message: "succesfully inserted feature",
+                };
+                res.status(result.statusCode);
+                res.send(result);
+                return [3 /*break*/, 4];
+            case 3:
+                e_5 = _a.sent();
+                res.send(e_5);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.addfeature = addfeature;

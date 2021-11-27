@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { add_plans_schema } from "../validation";
 import { Router } from "express";
-import { addplan, deleteplan, getplaninfobyname, getplans, updatepricing } from "../controller/plans_controller";
+import { addfeature, addplan, deletefeature, deleteplan, getplaninfobyname, getplans, updatepricing } from "../controller/plans_controller";
 import * as Joi from "joi";
 
 
@@ -15,6 +15,7 @@ router.post(
       let plan_names = req.body.plan_names;
       let button_value = req.body.button_value;
       let order_limit = req.body.order_limit;
+      let place_holder = req.body.place_holder||null;
       let original_pricing = req.body.original_pricing || null;
       let reduced_price = req.body.reduced_price || null;
       let billings = req.body.billings || null;
@@ -35,6 +36,7 @@ router.post(
         plan_names,
         button_value,
         order_limit,
+        place_holder,
         original_pricing,
         reduced_price,
         billings,
@@ -148,6 +150,57 @@ router.put(
       res.status(200);
     } catch (err) {
       res.send(err);
+    }
+  }
+);
+
+router.delete(
+  "/deletefeature",
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Inside deletefeature router");
+    try {
+      let feature_id = req.body.feature_id;
+      try {
+        const result = await Joi.string().guid().validateAsync(req.body.feature_id);
+      } catch (err: any) {
+        console.log(err);
+        const obj = {
+          statusCode: 400,
+          message: err.message,
+        };
+        res.status(obj.statusCode);
+        res.send(obj);
+      }
+      console.log("Validated the feature data");
+      await deletefeature(feature_id, req, res, next);
+    } catch (err) {
+      res.send(err);
+    }
+  }
+);
+
+router.post(
+  "/addfeature", async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Inside addfeature router");
+    try {
+      let plan_name = req.body.plan_name;
+      let feature = req.body.feature;
+      try {
+        await Joi.string().validateAsync(req.body.plan_name);
+        await Joi.string().validateAsync(req.body.feature);
+      } catch (err: any) {
+        console.log(err);
+        const obj = {
+          statusCode: 400,
+          message: err.message,
+        };
+        res.status(obj.statusCode);
+        res.send(obj);
+      }
+      console.log("Validated the feature data");
+      await addfeature(plan_name,feature , req, res, next);
+    }catch(e){
+      res.send(e);
     }
   }
 );

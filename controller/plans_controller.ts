@@ -6,6 +6,7 @@ export const addplan = async (
   plan_names: string,
   button_value: string,
   order_limit: Number,
+  place_holder: string,
   original_pricing: Number,
   reduced_price: Number,
   billings: string,
@@ -17,12 +18,13 @@ export const addplan = async (
     let id = uuid();
     let plansid = id;
     let queryString =
-      "INSERT INTO plans (id,plan_names, button_value, order_limit) VALUES ($1, $2, $3, $4)";
+      "INSERT INTO plans (id,plan_names, button_value, order_limit, place_holder) VALUES ($1, $2, $3, $4, $5)";
     let result = await db.query(queryString, [
       id,
       plan_names,
       button_value,
       order_limit,
+      place_holder
     ]);
     console.log(result);
     if (original_pricing != null && billings != null) {
@@ -81,7 +83,7 @@ export const getplaninfobyname = async (
 
     let planid = result1.rows[0]["id"];
     queryString =
-      "SELECT id, plan_names, button_value, order_limit, created_on FROM plans WHERE id=$1";
+      "SELECT id, plan_names, button_value, order_limit,place_holder, created_on FROM plans WHERE id=$1";
     let result2 = await db.query(queryString, [planid]);
     queryString =
       'SELECT id as "pricing_id", original_pricing, reduced_pricing, billing FROM pricing WHERE plans_id=$1';
@@ -175,4 +177,58 @@ export const updatepricing = async (
     res.send(e);
   }
 };
+
+export const deletefeature = async(
+  feature_id: string,
+  req: Request,
+  res: Response,
+  next: NextFunction
+)=>{
+  try {
+    let queryString="DELETE FROM features WHERE id=$1";
+    await db.query(queryString,[feature_id]);
+    let result = {
+      statusCode:200,
+      message:"Succesfully deleted the given data"
+    }
+    res.status(result.statusCode);
+    res.send(result);
+  } catch (e) {
+    res.send(e);
+  }
+}
+
+export const addfeature = async(
+  plan_name: string, 
+  feature: string,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) =>{
+  try {
+    let queryString = "SELECT id FROM plans WHERE plan_names=$1";
+    let result1 = await db.query(queryString, [plan_name]);
+    if (result1.rowCount != 1) {
+      let result = {
+        statusCode: 404,
+        message: "No Such plan exist",
+      };
+      res.status(result.statusCode);
+      res.send(result);
+    }
+    let planid = result1.rows[0]["id"];
+    let id = uuid();
+    queryString =
+          "INSERT INTO features (id,plans_id, features) VALUES ($1, $2, $3)";
+        await db.query(queryString, [id, planid, feature]);
+        let result = {
+          statusCode: 200,
+          message: "succesfully inserted feature",
+        };
+        res.status(result.statusCode);
+        res.send(result);
+  }catch(e){
+    res.send(e);
+  }
+}
 

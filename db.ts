@@ -1,6 +1,5 @@
 import { Client } from "pg";
 import * as dotenv from "dotenv";
-import { NextFunction, Request, response, Response } from "express";
 
 dotenv.config();
 

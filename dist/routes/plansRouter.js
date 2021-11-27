@@ -63,7 +63,7 @@ var Joi = __importStar(require("joi"));
 var router = (0, express_1.Router)();
 exports.router = router;
 router.post("/addplan", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
-    var plan_names, button_value, order_limit, original_pricing, reduced_price, billings, features, result, err_1, obj_1, a, obj, err_2;
+    var plan_names, button_value, order_limit, place_holder, original_pricing, reduced_price, billings, features, result, err_1, obj_1, a, obj, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -74,6 +74,7 @@ router.post("/addplan", function (req, res, next) { return __awaiter(void 0, voi
                 plan_names = req.body.plan_names;
                 button_value = req.body.button_value;
                 order_limit = req.body.order_limit;
+                place_holder = req.body.place_holder || null;
                 original_pricing = req.body.original_pricing || null;
                 reduced_price = req.body.reduced_price || null;
                 billings = req.body.billings || null;
@@ -97,7 +98,7 @@ router.post("/addplan", function (req, res, next) { return __awaiter(void 0, voi
                 return [3 /*break*/, 5];
             case 5:
                 console.log("Validated the data");
-                return [4 /*yield*/, (0, plans_controller_1.addplan)(plan_names, button_value, order_limit, original_pricing, reduced_price, billings, features, req, res)];
+                return [4 /*yield*/, (0, plans_controller_1.addplan)(plan_names, button_value, order_limit, place_holder, original_pricing, reduced_price, billings, features, req, res)];
             case 6:
                 a = _a.sent();
                 console.log("Sending the response");
@@ -133,7 +134,7 @@ router.get("/getplans", function (req, res, next) { return __awaiter(void 0, voi
             case 3:
                 err_3 = _a.sent();
                 console.log(err_3);
-                next(err_3);
+                res.send(err_3);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -176,7 +177,6 @@ router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(vo
             case 7:
                 err_5 = _a.sent();
                 res.send(err_5);
-                next(err_5);
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
         }
@@ -219,9 +219,148 @@ router.delete("/deleteplan", function (req, res, next) { return __awaiter(void 0
             case 7:
                 err_7 = _a.sent();
                 res.send(err_7);
-                next(err_7);
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
+        }
+    });
+}); });
+router.put("/updatepricing", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var pricing_id, original_pricing, reduced_pricing, billing, err_8, obj, err_9;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("Inside updatepricing router");
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 10, , 11]);
+                pricing_id = req.body.id;
+                original_pricing = req.body.original_pricing || null;
+                reduced_pricing = req.body.reduced_pricing || null;
+                billing = req.body.billing || null;
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 7, , 8]);
+                return [4 /*yield*/, Joi.string().guid().validateAsync(req.body.pricing_id)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, Joi.string().validateAsync(req.body.original_pricing)];
+            case 4:
+                _a.sent();
+                return [4 /*yield*/, Joi.string().validateAsync(req.body.reduced_pricing)];
+            case 5:
+                _a.sent();
+                return [4 /*yield*/, Joi.string().validateAsync(req.body.billing)];
+            case 6:
+                _a.sent();
+                return [3 /*break*/, 8];
+            case 7:
+                err_8 = _a.sent();
+                console.log(err_8);
+                obj = {
+                    statusCode: 400,
+                    message: err_8.message,
+                };
+                res.status(obj.statusCode);
+                res.send(obj);
+                return [3 /*break*/, 8];
+            case 8:
+                console.log("Validated the sent data");
+                return [4 /*yield*/, (0, plans_controller_1.updatepricing)(pricing_id, original_pricing, reduced_pricing, billing, req, res, next)];
+            case 9:
+                _a.sent();
+                res.status(200);
+                return [3 /*break*/, 11];
+            case 10:
+                err_9 = _a.sent();
+                res.send(err_9);
+                return [3 /*break*/, 11];
+            case 11: return [2 /*return*/];
+        }
+    });
+}); });
+router.delete("/deletefeature", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var feature_id, result, err_10, obj, err_11;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("Inside deletefeature router");
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 7, , 8]);
+                feature_id = req.body.feature_id;
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, Joi.string().guid().validateAsync(req.body.feature_id)];
+            case 3:
+                result = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                err_10 = _a.sent();
+                console.log(err_10);
+                obj = {
+                    statusCode: 400,
+                    message: err_10.message,
+                };
+                res.status(obj.statusCode);
+                res.send(obj);
+                return [3 /*break*/, 5];
+            case 5:
+                console.log("Validated the feature data");
+                return [4 /*yield*/, (0, plans_controller_1.deletefeature)(feature_id, req, res, next)];
+            case 6:
+                _a.sent();
+                return [3 /*break*/, 8];
+            case 7:
+                err_11 = _a.sent();
+                res.send(err_11);
+                return [3 /*break*/, 8];
+            case 8: return [2 /*return*/];
+        }
+    });
+}); });
+router.post("/addfeature", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var plan_name, feature, err_12, obj, e_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log("Inside addfeature router");
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 8, , 9]);
+                plan_name = req.body.plan_name;
+                feature = req.body.feature;
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 5, , 6]);
+                return [4 /*yield*/, Joi.string().validateAsync(req.body.plan_name)];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, Joi.string().validateAsync(req.body.feature)];
+            case 4:
+                _a.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                err_12 = _a.sent();
+                console.log(err_12);
+                obj = {
+                    statusCode: 400,
+                    message: err_12.message,
+                };
+                res.status(obj.statusCode);
+                res.send(obj);
+                return [3 /*break*/, 6];
+            case 6:
+                console.log("Validated the feature data");
+                return [4 /*yield*/, (0, plans_controller_1.addfeature)(plan_name, feature, req, res, next)];
+            case 7:
+                _a.sent();
+                return [3 /*break*/, 9];
+            case 8:
+                e_1 = _a.sent();
+                res.send(e_1);
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); });

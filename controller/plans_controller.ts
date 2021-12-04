@@ -24,7 +24,7 @@ export const addplan = async (
       plan_names,
       button_value,
       order_limit,
-      place_holder
+      place_holder,
     ]);
     console.log(result);
     if (original_pricing != null && billings != null) {
@@ -169,7 +169,7 @@ export const updatepricing = async (
       queryString = "UPDATE pricing SET reduced_pricing = $1 WHERE id = $2;";
       await db.query(queryString, [reduced_pricing, pricing_id]);
     }
-    if (billing != '') {
+    if (billing != "") {
       queryString = "UPDATE pricing SET billing = $1 WHERE id = $2;";
       await db.query(queryString, [billing, pricing_id]);
     }
@@ -180,34 +180,34 @@ export const updatepricing = async (
   }
 };
 
-export const deletefeature = async(
+export const deletefeature = async (
   feature_id: string,
   req: Request,
   res: Response,
   next: NextFunction
-)=>{
+) => {
   try {
-    let queryString="DELETE FROM features WHERE id=$1";
-    await db.query(queryString,[feature_id]);
+    let queryString = "DELETE FROM features WHERE id=$1";
+    await db.query(queryString, [feature_id]);
     let result = {
-      statusCode:200,
-      message:"Succesfully deleted the given data"
-    }
+      statusCode: 200,
+      message: "Succesfully deleted the given data",
+    };
     res.status(result.statusCode);
     res.send(result);
   } catch (e) {
     console.log(e);
     res.send(e);
   }
-}
+};
 
-export const addfeature = async(
-  plan_name: string, 
+export const addfeature = async (
+  plan_name: string,
   feature: string,
   req: Request,
   res: Response,
   next: NextFunction
-) =>{
+) => {
   try {
     let queryString = "SELECT id FROM plans WHERE plan_names=$1";
     let result1 = await db.query(queryString, [plan_name]);
@@ -222,16 +222,15 @@ export const addfeature = async(
     let planid = result1.rows[0]["id"];
     let id = uuid();
     queryString =
-          "INSERT INTO features (id,plans_id, features) VALUES ($1, $2, $3)";
-        await db.query(queryString, [id, planid, feature]);
-        let result = {
-          statusCode: 200,
-          message: "succesfully inserted feature",
-        };
-        res.status(result.statusCode);
-        res.send(result);
-  }catch(e){
+      "INSERT INTO features (id,plans_id, features) VALUES ($1, $2, $3)";
+    await db.query(queryString, [id, planid, feature]);
+    let result = {
+      statusCode: 200,
+      message: "succesfully inserted feature",
+    };
+    res.status(result.statusCode);
+    res.send(result);
+  } catch (e) {
     res.send(e);
   }
-}
-
+};

@@ -1,9 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { add_plans_schema } from "../validation";
 import { Router } from "express";
-import { addfeature, addplan, deletefeature, deleteplan, getplaninfobyname, getplans, updatepricing } from "../controller/plans_controller";
+import {
+  addfeature,
+  addplan,
+  deletefeature,
+  deleteplan,
+  getplaninfobyname,
+  getplans,
+  updatepricing,
+} from "../controller/plans_controller";
 import * as Joi from "joi";
-
 
 const router = Router();
 
@@ -15,7 +22,7 @@ router.post(
       let plan_names = req.body.plan_names;
       let button_value = req.body.button_value;
       let order_limit = req.body.order_limit;
-      let place_holder = req.body.place_holder||null;
+      let place_holder = req.body.place_holder || null;
       let original_pricing = req.body.original_pricing || null;
       let reduced_price = req.body.reduced_price || null;
       let billings = req.body.billings || null;
@@ -71,13 +78,15 @@ router.get(
 );
 
 router.get(
-  "/getplaninfobyname",
+  "/planinfo",
   async (req: Request, res: Response, next: NextFunction) => {
     console.log("Inside getplaninfobyname router");
     try {
-      let plan_names = req.body.plan_names;
+      let plan_names: string = req.query.plan_names as string;
       try {
-        const result = await Joi.string().required().validateAsync(req.body.plan_names);
+        const result = await Joi.string()
+          .required()
+          .validateAsync(req.query.plan_names);
       } catch (err: any) {
         console.log(err);
         const obj = {
@@ -101,9 +110,11 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     console.log("Inside deleteplan router");
     try {
-      let plan_names = req.body.plan_names;
+      let plan_names = req.query.plan_names as string;
       try {
-        const result = await Joi.string().required().validateAsync(req.body.plan_names);
+        const result = await Joi.string()
+          .required()
+          .validateAsync(req.query.plan_names);
       } catch (err: any) {
         console.log(err);
         const obj = {
@@ -128,9 +139,9 @@ router.put(
     console.log("Inside updatepricing router");
     try {
       let pricing_id = req.body.id;
-      let original_pricing = req.body.original_pricing||-1;
-      let reduced_pricing = req.body.reduced_pricing||-1;
-      let billing = req.body.billing||'';
+      let original_pricing = req.body.original_pricing || -1;
+      let reduced_pricing = req.body.reduced_pricing || -1;
+      let billing = req.body.billing || "";
       try {
         await Joi.string().guid().required().validateAsync(req.body.id);
         await Joi.number().optional().validateAsync(req.body.original_pricing);
@@ -146,11 +157,19 @@ router.put(
         res.send(obj);
       }
       console.log("Validated the sent data");
-      await updatepricing(pricing_id,original_pricing,reduced_pricing,billing, req, res, next);
-      const result  = {
+      await updatepricing(
+        pricing_id,
+        original_pricing,
+        reduced_pricing,
+        billing,
+        req,
+        res,
+        next
+      );
+      const result = {
         statusCode: 200,
-        message: "Succesfully updated pricing"
-      }
+        message: "Succesfully updated pricing",
+      };
       res.status(result.statusCode);
       res.send(result);
     } catch (err) {
@@ -164,9 +183,12 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     console.log("Inside deletefeature router");
     try {
-      let feature_id = req.body.feature_id;
+      let feature_id = req.query.feature_id as string;
       try {
-        const result = await Joi.string().guid().required().validateAsync(req.body.feature_id);
+        const result = await Joi.string()
+          .guid()
+          .required()
+          .validateAsync(req.query.feature_id);
       } catch (err: any) {
         console.log(err);
         const obj = {
@@ -185,7 +207,8 @@ router.delete(
 );
 
 router.post(
-  "/addfeature", async (req: Request, res: Response, next: NextFunction) => {
+  "/addfeature",
+  async (req: Request, res: Response, next: NextFunction) => {
     console.log("Inside addfeature router");
     try {
       let plan_name = req.body.plan_name;
@@ -203,8 +226,8 @@ router.post(
         res.send(obj);
       }
       console.log("Validated the feature data");
-      await addfeature(plan_name,feature , req, res, next);
-    }catch(e){
+      await addfeature(plan_name, feature, req, res, next);
+    } catch (e) {
       res.send(e);
     }
   }

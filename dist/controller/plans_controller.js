@@ -53,7 +53,7 @@ var addplan = function (plan_names, button_value, order_limit, place_holder, ori
                         plan_names,
                         button_value,
                         order_limit,
-                        place_holder
+                        place_holder,
                     ])];
             case 1:
                 result = _a.sent();
@@ -131,6 +131,7 @@ var getplaninfobyname = function (plan_names, req, res, next) { return __awaiter
                 return [4 /*yield*/, db_1.db.query(queryString, [plan_names])];
             case 1:
                 result1 = _a.sent();
+                console.log(result1);
                 if (result1.rowCount != 1) {
                     result = {
                         statusCode: 404,
@@ -251,7 +252,7 @@ var updatepricing = function (pricing_id, original_pricing, reduced_pricing, bil
                 _a.sent();
                 _a.label = 5;
             case 5:
-                if (!(billing != '')) return [3 /*break*/, 7];
+                if (!(billing != "")) return [3 /*break*/, 7];
                 queryString = "UPDATE pricing SET billing = $1 WHERE id = $2;";
                 return [4 /*yield*/, db_1.db.query(queryString, [billing, pricing_id])];
             case 6:
@@ -281,7 +282,7 @@ var deletefeature = function (feature_id, req, res, next) { return __awaiter(voi
                 _a.sent();
                 result = {
                     statusCode: 200,
-                    message: "Succesfully deleted the given data"
+                    message: "Succesfully deleted the given data",
                 };
                 res.status(result.statusCode);
                 res.send(result);

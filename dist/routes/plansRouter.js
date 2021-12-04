@@ -140,7 +140,7 @@ router.get("/getplans", function (req, res, next) { return __awaiter(void 0, voi
         }
     });
 }); });
-router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/planinfo", function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
     var plan_names, result, err_4, obj, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -149,11 +149,13 @@ router.get("/getplaninfobyname", function (req, res, next) { return __awaiter(vo
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 7, , 8]);
-                plan_names = req.body.plan_names;
+                plan_names = req.query.plan_names;
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, Joi.string().required().validateAsync(req.body.plan_names)];
+                return [4 /*yield*/, Joi.string()
+                        .required()
+                        .validateAsync(req.query.plan_names)];
             case 3:
                 result = _a.sent();
                 return [3 /*break*/, 5];
@@ -191,11 +193,13 @@ router.delete("/deleteplan", function (req, res, next) { return __awaiter(void 0
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 7, , 8]);
-                plan_names = req.body.plan_names;
+                plan_names = req.query.plan_names;
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, Joi.string().required().validateAsync(req.body.plan_names)];
+                return [4 /*yield*/, Joi.string()
+                        .required()
+                        .validateAsync(req.query.plan_names)];
             case 3:
                 result = _a.sent();
                 return [3 /*break*/, 5];
@@ -236,7 +240,7 @@ router.put("/updatepricing", function (req, res, next) { return __awaiter(void 0
                 pricing_id = req.body.id;
                 original_pricing = req.body.original_pricing || -1;
                 reduced_pricing = req.body.reduced_pricing || -1;
-                billing = req.body.billing || '';
+                billing = req.body.billing || "";
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 7, , 8]);
@@ -270,7 +274,7 @@ router.put("/updatepricing", function (req, res, next) { return __awaiter(void 0
                 _a.sent();
                 result = {
                     statusCode: 200,
-                    message: "Succesfully updated pricing"
+                    message: "Succesfully updated pricing",
                 };
                 res.status(result.statusCode);
                 res.send(result);
@@ -292,11 +296,14 @@ router.delete("/deletefeature", function (req, res, next) { return __awaiter(voi
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 7, , 8]);
-                feature_id = req.body.feature_id;
+                feature_id = req.query.feature_id;
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, Joi.string().guid().required().validateAsync(req.body.feature_id)];
+                return [4 /*yield*/, Joi.string()
+                        .guid()
+                        .required()
+                        .validateAsync(req.query.feature_id)];
             case 3:
                 result = _a.sent();
                 return [3 /*break*/, 5];

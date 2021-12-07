@@ -1,0 +1,241 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Plans api
+  description: >-
+    This api lets you store and fetch data about plans with pricings and features
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/apsshrinet/plans/1.0.0
+paths:
+  /plans/addplan:
+    post:
+      description: Creates a new plan along with its info
+      tags:
+        - plans
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              required: 
+              - plan_names
+              - button_value
+              properties:
+                plan_names: 
+                  type: string
+                  example: STORE
+                button_value:
+                  type: string
+                  example: Start Free trial
+                order_limit:
+                  type: integer
+                  minimum: 0
+                  example: 200
+                place_holder:
+                  type: string
+                  example: For large transaction volumes & specific customization needs.
+                original_pricing:
+                  type: integer
+                  minimum: 0
+                  example: 400
+                reduced_pricing:
+                  type: integer
+                  minimum: 0
+                  example: 300
+                billings:
+                  type: string
+                  example: Annually
+                features:
+                    type: array
+                    items:
+                        type: string
+                    example: ["good","great"]
+      responses:
+        200:
+          description: Successfully created plan with provided info
+  /plans/planinfo:
+    get:
+      description: Fetches all the information about a given plan
+      tags:
+      - plans
+      parameters: 
+      - in: query
+        name: plan_names
+        required: true
+        example: STORE
+        schema:
+          type: string
+        description: Name of the plan for which information is fetced
+      
+      responses:
+        200:
+          description: Shows the plan info pricing and features of the given plan name
+          content:
+            applicatiion/json:
+              schema:
+                type: object
+                properties:
+                  plans:
+                    type: array
+                    items: 
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: e3a520b2-6741-44d4-bdd3-804a7c1359ec
+                          plan_names: 
+                            type: string
+                            example: STORE
+                          button_value:
+                            type: string
+                            example: Start Free trial
+                          order_limit:
+                            type: integer
+                            minimum: 0
+                            example: 200
+                          place_holder:
+                            type: string
+                            example: For large transaction volumes & specific customization needs.
+                          created_on:
+                            type: string
+                            example: "2021-11-27T18:43:31.175Z"
+                            
+                    
+                  pricing:
+                    type: array
+                    items: 
+                        type: object
+                        properties:
+                          pricing_id:
+                            type: string
+                            example: 20c24199-fbf6-4775-83bf-54ce3eda1226
+                          original_pricing:
+                            type: integer
+                            example: 600
+                          reduced_pricing:
+                            type: integer
+                            example: 300
+                          billing:
+                            type: string
+                            example: Annual
+                            
+                  features:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        feature_id:
+                          type: string
+                          example: b10644bf-2457-430d-806a-e8dbcafa05e7
+                        features:
+                          type: string
+                          example: Unlimited users & listing
+  /plans/getplans:
+    get:
+      description: Get all the plan names
+      tags:
+      - plans
+      responses:
+        200:
+          description: Returns all the plan names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    plan_names:
+                      type: string
+                      example: STORE
+  /plans/deleteplan:
+    delete:
+      description: Deletes a plan along with all its information
+      tags: 
+      - plans
+      parameters:
+        - in: query
+          name: plan_names
+          required: true
+          example: STORE
+          schema:
+            type: string
+          description: Name of the plan for which information is deleted
+      responses:
+        200:
+          description: Successfully deleted all the data of given plan name
+  /plans/updatepricing:
+    put:
+      description: Updating the price for the provided values
+      tags:
+      - pricing
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              required: 
+              - id
+              properties:
+                id:
+                  type: string
+                  example: e3a520b2-6741-44d4-bdd3-804a7c1359ec
+                original_pricing:
+                  type: integer
+                  minimum: 0
+                  example: 500
+                reduced_pricing:
+                  type: integer
+                  minimum: 0
+                  example: 200
+                billings:
+                  type: string
+                  example: Monthly
+      responses:
+        200:
+          description: Successfully updated pricing
+  /plans/addfeature:
+    post:
+      description: For adding new feature to a plan
+      tags:
+      - features
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: 
+              - plan_name
+              - feature
+              properties:
+                plan_name:
+                  type: string
+                  example: STORE
+                feature:
+                  type: string
+                  example: Single Store
+      responses:
+        200:
+          description: Successfully added feature
+  /plans/deletefeature: 
+    delete:
+      description: Delete a feature by using its id
+      tags:
+      - features
+      parameters:
+        - in: query
+          name: feature_id
+          required: true
+          example: e3a520b2-6741-44d4-bdd3-804a7c1359ec
+          schema:
+            type: string
+            description: Id of the feature that is to be deleted
+        
+      responses:
+        200:
+          description: Successfully deleted the feature with given id

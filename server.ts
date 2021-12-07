@@ -9,6 +9,11 @@ import * as bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import { db } from "./db";
 import { router } from "./routes/plansRouter";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
+
+const swaggerDocument = YAML.load('./swagger.yaml');
+
 
 const app = express();
 dotenv.config();
@@ -66,6 +71,8 @@ app.use(
     extended: true,
   })
 );
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get("/", async (req: Request, res: Response, next: NextFunction) => {
   res.send("Hello from express.");

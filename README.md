@@ -8,4 +8,4 @@ info:
 servers:
   ### Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/apsshrinet/plans/1.0.0
+    url: https://app.swaggerhub.com/apis-docs/apsshrinet/plans/1.0.0

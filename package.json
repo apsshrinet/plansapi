@@ -4,7 +4,7 @@
   "description": "It is an api to provide plans and its informations and pricings",
   "main": "server.js",
   "scripts": {
-    "start": "ts-node src/config/server.ts",
+    "start": "ts-node server.ts",
     "dev": "nodemon -x ts-node src/config/server.ts"
   },
   "author": "Adi",

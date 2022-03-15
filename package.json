@@ -5,11 +5,9 @@
   "description": "It is an api to provide plans and its informations and pricings",
   "main": "server.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "postinstall": "tsc && mv -i -v dist/ ",
-    "watch-node": "nodemon dist/index.js",
-    "watch-ts": "tsc -w",
-    "deploy": "git add . && git commit -m Heroku && git push heroku main"
+  "start": "node dist/index.js",
+  "build": "tsc",
+  "postinstall": "npm run build"
   },
   "author": "Adi",
   "license": "ISC",

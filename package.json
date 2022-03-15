@@ -1,14 +1,15 @@
 {
   "name": "plansapi",
   "version": "1.0.0",
-   "engines": {
-    "node": "6.11.1"
-  },
+  "engines": { "node": "12.16.3" },
   "description": "It is an api to provide plans and its informations and pricings",
   "main": "server.js",
   "scripts": {
-    "start": "ts-node server.ts",
-    "dev": "nodemon -x ts-node server.ts"
+    "start": "node dist/index.js",
+    "postinstall": "tsc",
+    "watch-node": "nodemon dist/index.js",
+    "watch-ts": "tsc -w",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "author": "Adi",
   "license": "ISC",
